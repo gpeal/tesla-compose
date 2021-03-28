@@ -38,7 +38,6 @@ fun TeslaScaffold(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(brush =  Brush.verticalGradient(listOf(scaffoldStartColor, scaffoldEndColor)))
         ) {
             content()
         }

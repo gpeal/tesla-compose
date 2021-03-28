@@ -3,6 +3,12 @@ plugins {
     id 'kotlin-android'
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        freeCompilerArgs += [   "-Xuse-experimental=androidx.compose.material.ExperimentalMaterialApi"]
+    }
+}
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
