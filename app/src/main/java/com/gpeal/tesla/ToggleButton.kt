@@ -1,5 +1,6 @@
 package com.gpeal.tesla
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
@@ -11,9 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,28 +29,31 @@ import androidx.compose.ui.unit.dp
 private val pressAnimationSpec = spring<Float>(dampingRatio = 0.4f, stiffness = 400f)
 
 @Composable
-fun ToolbarButton(
+fun ToggleButton(
     iconPainter: Painter,
     contentDescription: String,
+    isEnabled: Boolean,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(if (isPressed) 0.95f else 1f, animationSpec = pressAnimationSpec)
+    val iconColor by animateColorAsState(if (isEnabled) Color.White else Color(0xFF7F8489))
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .size(100.dp)
+        modifier = modifier
+            .size(88.dp)
             .scale(scale)
     ) {
-        ButtonLayer1(isPressed)
-        ButtonLayer2(isPressed)
-        ButtonLayer3(interactionSource, onClick)
+        ButtonLayer1(isPressed, isEnabled)
+        ButtonLayer2(isPressed, isEnabled)
+        ButtonLayer3(interactionSource, isEnabled, onClick)
         Icon(
             iconPainter,
             contentDescription,
-            tint = Color(0xFF857F89),
+            tint = iconColor,
             modifier = Modifier
                 .size(16.dp)
         )
@@ -61,8 +63,12 @@ fun ToolbarButton(
 @Composable
 private fun ButtonLayer3(
     interactionSource: MutableInteractionSource,
+    isEnabled: Boolean,
     onClick: () -> Unit,
 ) {
+    val startColor by animateColorAsState(if (isEnabled) Color(0xFF016BB8) else Color(0xFF2F353A))
+    val endColor by animateColorAsState(if (isEnabled) Color(0xFF11A8FD) else Color(0xFF1C1F22))
+
     Box(
         modifier = Modifier
             .size(57.dp)
@@ -74,15 +80,19 @@ private fun ButtonLayer3(
             )
             .background(
                 Brush.linearGradient(
-                    colors = listOf(Color(0xFF2F353A), Color(0xFF1C1F22)),
+                    colors = listOf(startColor, endColor),
                 )
             )
     )
 }
 
 @Composable
-private fun ButtonLayer2(isPressed: Boolean) {
+private fun ButtonLayer2(
+    isPressed: Boolean,
+    isEnabled: Boolean,
+) {
     val stopLocation by animateFloatAsState(if (isPressed) 0.8f else 0.95f, animationSpec = pressAnimationSpec)
+    val color by animateColorAsState(if (isEnabled) Color(0xFF11A8FD) else Color(0xFF2F353A))
     Box(
         modifier = Modifier
             .size(61.dp)
@@ -90,9 +100,9 @@ private fun ButtonLayer2(isPressed: Boolean) {
             .background(
                 Brush.radialGradient(
                     colorStops = arrayOf(
-                        0f to Color(0xFF2C3036),
-                        stopLocation to Color(0xFF2C3036),
-                        1f to Color(0x0031343C),
+                        0f to color,
+                        stopLocation to color,
+                        1f to color.copy(alpha = 0f),
                     ),
                 )
             )
@@ -100,30 +110,37 @@ private fun ButtonLayer2(isPressed: Boolean) {
 }
 
 @Composable
-private fun ButtonLayer1(isPressed: Boolean) {
+private fun ButtonLayer1(
+    isPressed: Boolean,
+    isEnabled: Boolean,
+) {
     val density = LocalDensity.current
     val radius by animateFloatAsState(
-        with(density) { (if (isPressed) 35 else 40).dp.toPx() },
+        with(density) { (if (isPressed) 32 else 32).dp.toPx() },
         animationSpec = pressAnimationSpec
     )
     val center = with(density) { 50.dp.toPx() }
     val centerOffset by animateFloatAsState(
-        with(density) { (if (isPressed) 4 else 7).dp.toPx() },
+        with(density) { (if (isPressed) 0 else 5).dp.toPx() },
         animationSpec = pressAnimationSpec
     )
+
+    val topShadowColor by animateColorAsState(if (isEnabled) Color(0xFF2F393D) else Color(0xFF262E32))
+    val bottomShadowColor by animateColorAsState(if (isEnabled) Color.Black else Color(0xBF101012))
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 Brush.radialGradient(
-                    listOf(Color(0xFF485057), Color.Transparent),
+                    listOf(topShadowColor, Color.Transparent),
                     center = Offset(center - centerOffset, center - centerOffset),
                     radius = radius,
                 )
             )
             .background(
                 Brush.radialGradient(
-                    listOf(Color(0xFF1F2427), Color.Transparent),
+                    listOf(bottomShadowColor, Color.Transparent),
                     center = Offset(center + centerOffset, center + centerOffset),
                     radius = radius,
                 )
@@ -133,14 +150,17 @@ private fun ButtonLayer1(isPressed: Boolean) {
 
 @Preview(name = "Profile Button")
 @Composable
-fun ProfileButton() {
+private fun PowerButton() {
+    var isEnabled by remember { mutableStateOf(true) }
     Box(
         modifier = Modifier.background(Color(0xFF353A40))
     ) {
-        ToolbarButton(
+        ToggleButton(
             painterResource(R.drawable.ic_profile),
             contentDescription = "Profile",
-        ) {}
-
+            isEnabled = isEnabled,
+        ) {
+            isEnabled = !isEnabled
+        }
     }
 }
