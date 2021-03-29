@@ -1,28 +1,33 @@
 package com.gpeal.tesla
 
-import android.util.Log
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.center
+import androidx.compose.ui.geometry.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.input.pointer.consumePositionChange
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.center
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.gpeal.tesla.ui.theme.Lato
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -32,13 +37,14 @@ private const val MaxTemperature = 90f
 private const val StrokeCapBufferDegrees = 13f
 private const val DialEndDegrees = 360f - 2f * StrokeCapBufferDegrees - 5f
 
-private const val DialEndRadians = DialEndDegrees * Math.PI / 180f
+private const val DialEndRadians = (DialEndDegrees * Math.PI / 180f).toFloat()
 
 @Composable
 fun ACControl(
+    initialTemperature: Float = 74f,
     modifier: Modifier = Modifier
 ) {
-    var temperature by remember { mutableStateOf(74f) }
+    var temperature by remember(initialTemperature) { mutableStateOf(initialTemperature) }
 
     Box(
         modifier = modifier
@@ -51,7 +57,12 @@ fun ACControl(
             val temperatureRange = MaxTemperature - MinTemperature
             val newTemperature = MinTemperature + temperatureRange * percentage
             if (newTemperature < MinTemperature + 15f && temperature > MaxTemperature - 15f) return@DialHandle
+            if (newTemperature > MaxTemperature - 15f && temperature < MinTemperature + 15f) return@DialHandle
             temperature = newTemperature
+        }
+        TemperatureText(temperature)
+        repeat(7) { i ->
+            TemperatureTick(temperature, 46.75f + i * 6.8649f)
         }
     }
 }
@@ -215,10 +226,93 @@ fun DialHandle(
     }
 }
 
-@Preview
 @Composable
-fun ACControlPreview() {
+fun BoxScope.TemperatureText(
+    temperature: Float,
+) {
+    Column(
+        modifier = Modifier
+            .align(Alignment.Center)
+    ) {
+        Text(
+            "${"%.0f".format(temperature)}°F",
+            style = TextStyle(
+                fontFamily = Lato,
+                fontWeight = FontWeight.Black,
+                fontSize = 38.sp,
+                color = Color.White,
+            )
+        )
+        Text(
+            "Cooling…",
+            style = TextStyle(
+                fontFamily = Lato,
+                fontSize = 20.sp,
+                color = Color.White,
+            )
+        )
+    }
+}
+
+@Composable
+fun TemperatureTick(
+    temperature: Float,
+    tickTemperature: Float,
+) {
+    val onColor = Color(0xFF0A8ADA)
+    val offColor = Color(0xFF15171C)
+    val color by animateColorAsState(
+        if (temperature >= tickTemperature) onColor else offColor,
+        animationSpec = spring(),
+    )
+    val paint = remember { Paint() }
+    val path = remember { Path() }
+
+    val tickPercentage = (tickTemperature - MinTemperature) / (MaxTemperature - MinTemperature)
+    val tickDegrees = tickPercentage * DialEndDegrees
+
+    Canvas(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp)
+            .aspectRatio(1f)
+    ) {
+        rotate(
+            tickDegrees + 90f,
+            pivot = size.center,
+        ) {
+            val topLeft = Offset(size.width - 15.dp.toPx(), size.center.y - 1.5.dp.toPx())
+            val size = Size(15.dp.toPx(), 3.dp.toPx())
+
+            path.reset()
+            path.addRoundRect(RoundRect(Rect(topLeft, size),CornerRadius(1.5.dp.toPx(), 1.5.dp.toPx())))
+
+
+            drawIntoCanvas { canvas ->
+                val frameworkPaint = paint.asFrameworkPaint()
+                paint.color = color
+                frameworkPaint.setShadowLayer(10.dp.toPx(), 0f, 0f, color.toArgb())
+                canvas.drawPath(path, paint)
+            }
+        }
+    }
+}
+
+@Preview(name = "74 Degrees")
+@Composable
+fun ACControlPreview74() {
     ACControl(
+        74f,
+        modifier = Modifier
+            .size(400.dp)
+    )
+}
+
+@Preview(name = "85 Degrees")
+@Composable
+fun ACControlPreview85() {
+    ACControl(
+        85f,
         modifier = Modifier
             .size(400.dp)
     )
