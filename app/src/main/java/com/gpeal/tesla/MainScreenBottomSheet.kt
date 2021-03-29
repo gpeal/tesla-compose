@@ -34,6 +34,7 @@ fun MainScreenBottomSheetContent(scaffoldState: BottomSheetScaffoldState) {
     val scope = rememberCoroutineScope()
 
     Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
             .background(
@@ -65,6 +66,11 @@ fun MainScreenBottomSheetContent(scaffoldState: BottomSheetScaffoldState) {
             BottomSheetInfo()
             ACPowerButton()
         }
+        Spacer(modifier = Modifier.weight(1f))
+        ACControl(
+            modifier = Modifier
+                .size(400.dp)
+        )
         Spacer(modifier = Modifier.weight(1f))
         FeatureButtons()
     }

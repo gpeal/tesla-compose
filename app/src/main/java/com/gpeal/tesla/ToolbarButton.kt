@@ -1,5 +1,6 @@
 package com.gpeal.tesla
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
@@ -111,12 +112,15 @@ private fun ButtonLayer1(isPressed: Boolean) {
         with(density) { (if (isPressed) 4 else 7).dp.toPx() },
         animationSpec = pressAnimationSpec
     )
+
+    val topLeftShadowColor by animateColorAsState(if (isPressed) Color(0xFF424a52) else Color(0xFF485057))
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 Brush.radialGradient(
-                    listOf(Color(0xFF485057), Color.Transparent),
+                    listOf(topLeftShadowColor, Color.Transparent),
                     center = Offset(center - centerOffset, center - centerOffset),
                     radius = radius,
                 )
