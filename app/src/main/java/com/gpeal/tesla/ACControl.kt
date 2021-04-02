@@ -12,6 +12,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.graphics.*
@@ -52,6 +53,7 @@ fun ACControl(
         BackgroundTopShadow()
         BackgroundBottomShadow()
         BackgroundCircle()
+        DialUnfilledArc()
         DialArc(temperature)
         DialHandle(temperature) { percentage ->
             val temperatureRange = MaxTemperature - MinTemperature
@@ -160,6 +162,33 @@ private fun DialArc(
                 canvas.drawPath(path, fillPaint)
             }
         }
+    }
+}
+
+@Composable
+fun DialUnfilledArc() {
+    Canvas(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(60.dp)
+            .aspectRatio(1f)
+            .alpha(0.17f)
+    ) {
+        val innerRadius = size.width / 2f - 48.dp.toPx()
+        val innerRadiusPercent = innerRadius / (size.width / 2f)
+        val shadowWidth = 3.dp.toPx() / (size.width / 2f)
+        drawCircle(
+            Brush.radialGradient(
+                0f to Color.Transparent,
+                innerRadiusPercent to Color.Transparent,
+                (innerRadiusPercent + 0.01f) to Color(0x4FAABBDE),
+                (innerRadiusPercent + shadowWidth) to Color(0xFF1F2124),
+                (1f - shadowWidth) to Color(0xFF1F2124),
+                1f to Color(0x4FAABBDE),
+            ),
+            radius = size.width / 2f,
+            center = size.center,
+        )
     }
 }
 
