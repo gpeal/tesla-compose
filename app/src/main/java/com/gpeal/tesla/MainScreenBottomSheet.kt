@@ -69,10 +69,20 @@ fun MainScreenBottomSheetContent(scaffoldState: BottomSheetScaffoldState) {
         Spacer(modifier = Modifier.weight(1f))
         ACControl(
             modifier = Modifier
-                .size(400.dp)
+                .size(350.dp)
         )
         Spacer(modifier = Modifier.weight(1f))
-        FeatureButtons()
+        FanControl(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 38.dp)
+                .offset(y = (-18).dp)
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        FeatureButtons(
+            modifier = Modifier
+                .offset(y = (-8).dp)
+        )
     }
 }
 
@@ -155,7 +165,9 @@ private fun ACPowerButton() {
 }
 
 @Composable
-private fun FeatureButtons() {
+private fun FeatureButtons(
+    modifier: Modifier = Modifier,
+) {
     var isAutoEnabled by remember { mutableStateOf(true) }
     var isDryEnabled by remember { mutableStateOf(true) }
     var isCoolEnabled by remember { mutableStateOf(true) }
@@ -163,6 +175,7 @@ private fun FeatureButtons() {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
     ) {
         Text(
             "Mode",
@@ -173,7 +186,7 @@ private fun FeatureButtons() {
                 fontSize = 24.sp,
             ),
             modifier = Modifier
-                .padding(bottom = 16.dp)
+                .padding(bottom = 12.dp)
         )
         Row(
             horizontalArrangement = Arrangement.SpaceAround,

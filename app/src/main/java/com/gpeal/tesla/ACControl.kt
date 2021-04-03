@@ -35,7 +35,7 @@ import kotlin.math.sin
 
 private const val MinTemperature = 40f
 private const val MaxTemperature = 90f
-private const val StrokeCapBufferDegrees = 13f
+private const val StrokeCapBufferDegrees = 16f
 private const val DialEndDegrees = 360f - 2f * StrokeCapBufferDegrees - 5f
 
 private const val DialEndRadians = (DialEndDegrees * Math.PI / 180f).toFloat()
@@ -73,7 +73,7 @@ fun ACControl(
 private fun BackgroundCircle() {
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(50.dp)
             .aspectRatio(1f)
             .clip(CircleShape)
@@ -90,8 +90,9 @@ private fun BackgroundTopShadow() {
     val color = Color(0xFF485057)
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(20.dp)
+            .aspectRatio(1f)
             .offset((-25).dp, (-25).dp)
             .background(
                 Brush.radialGradient(listOf(color, color.copy(alpha = 0f)))
@@ -104,8 +105,9 @@ private fun BackgroundBottomShadow() {
     val color = Color(0xFF141415)
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(20.dp)
+            .aspectRatio(1f)
             .offset(25.dp, 25.dp)
             .background(
                 Brush.radialGradient(listOf(color, color.copy(alpha = 0f)))
@@ -138,8 +140,9 @@ private fun DialArc(
 
     Canvas(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(84.dp)
+            .aspectRatio(1f)
             .aspectRatio(1f)
     ) {
         path.reset()
@@ -169,8 +172,9 @@ private fun DialArc(
 fun DialUnfilledArc() {
     Canvas(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(60.dp)
+            .aspectRatio(1f)
             .aspectRatio(1f)
             .alpha(0.17f)
     ) {
@@ -204,7 +208,7 @@ fun DialHandle(
 
     Canvas(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(59.dp)
             .aspectRatio(1f)
             .pointerInput(Unit) {
@@ -302,7 +306,7 @@ fun TemperatureTick(
 
     Canvas(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(20.dp)
             .aspectRatio(1f)
     ) {
@@ -333,7 +337,8 @@ fun ACControlPreview74() {
     ACControl(
         74f,
         modifier = Modifier
-            .size(400.dp)
+            .width(400.dp)
+            .wrapContentHeight()
     )
 }
 
