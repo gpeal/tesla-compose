@@ -35,7 +35,7 @@ import kotlin.math.sin
 
 private const val MinTemperature = 40f
 private const val MaxTemperature = 90f
-private const val StrokeCapBufferDegrees = 16f
+private const val StrokeCapBufferDegrees = 14f
 private const val DialEndDegrees = 360f - 2f * StrokeCapBufferDegrees - 5f
 
 private const val DialEndRadians = (DialEndDegrees * Math.PI / 180f).toFloat()
@@ -147,7 +147,7 @@ private fun DialArc(
     ) {
         path.reset()
         path.moveTo(size.width / 2f, size.height)
-        path.addArc(Rect(Offset.Zero, size), StrokeCapBufferDegrees, temperatureSweepAngle)
+        path.addArc(Rect(Offset.Zero, size), StrokeCapBufferDegrees + 5f, temperatureSweepAngle)
 
         drawIntoCanvas { canvas ->
             fillPaint.strokeWidth = 48.dp.toPx()
@@ -160,7 +160,7 @@ private fun DialArc(
             )
             val frameworkShadowPaint = shadowPaint.asFrameworkPaint()
             frameworkShadowPaint.setShadowLayer(6.dp.toPx(), 0f, 0f, shadowPaint.color.toArgb())
-            rotate(90f - StrokeCapBufferDegrees) {
+            rotate(90f - StrokeCapBufferDegrees - 5f) {
                 canvas.drawPath(path, shadowPaint)
                 canvas.drawPath(path, fillPaint)
             }

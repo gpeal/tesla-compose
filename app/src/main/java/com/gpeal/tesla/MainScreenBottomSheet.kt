@@ -66,22 +66,20 @@ fun MainScreenBottomSheetContent(scaffoldState: BottomSheetScaffoldState) {
             BottomSheetInfo()
             ACPowerButton()
         }
-        Spacer(modifier = Modifier.weight(1f))
         ACControl(
             modifier = Modifier
-                .size(350.dp)
+                .size(375.dp)
+                .offset(y = (-16).dp)
         )
-        Spacer(modifier = Modifier.weight(1f))
         FanControl(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 38.dp)
-                .offset(y = (-18).dp)
+                .offset(y = (-36).dp)
         )
-        Spacer(modifier = Modifier.weight(1f))
         FeatureButtons(
             modifier = Modifier
-                .offset(y = (-8).dp)
+                .offset(y = (-16).dp)
         )
     }
 }
@@ -245,7 +243,7 @@ private fun FeatureButton(
                 color = Color(0xFF7F8489)
             ),
             modifier = Modifier
-                .offset(y = 4.dp)
+                .padding(bottom = 12.dp)
         )
         ToggleButton(
             icon,
