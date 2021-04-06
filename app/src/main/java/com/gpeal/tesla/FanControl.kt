@@ -73,7 +73,7 @@ fun FanControl(
                 fontFamily = Lato,
                 fontWeight = FontWeight.Black,
                 color = Color.White,
-                fontSize = 24.sp,
+                fontSize = 20.sp,
             ),
             modifier = Modifier
                 .padding(bottom = 12.dp)

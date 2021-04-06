@@ -69,13 +69,13 @@ fun MainScreenBottomSheetContent(scaffoldState: BottomSheetScaffoldState) {
         ACControl(
             modifier = Modifier
                 .size(375.dp)
-                .offset(y = (-16).dp)
+                .padding(top = 5.dp)
         )
         FanControl(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 38.dp)
-                .offset(y = (-36).dp)
+                .offset(y = (-30).dp)
         )
         FeatureButtons(
             modifier = Modifier
@@ -181,7 +181,7 @@ private fun FeatureButtons(
                 fontFamily = Lato,
                 fontWeight = FontWeight.Black,
                 color = Color.White,
-                fontSize = 24.sp,
+                fontSize = 20.sp,
             ),
             modifier = Modifier
                 .padding(bottom = 12.dp)
